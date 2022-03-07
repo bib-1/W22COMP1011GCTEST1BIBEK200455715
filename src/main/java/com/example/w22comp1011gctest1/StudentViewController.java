@@ -53,10 +53,22 @@ public class StudentViewController implements Initializable {
 
     @FXML
     private void applyFilter() throws SQLException {
-        tableView.getItems().clear();
         if(ontarioCheckBox.isSelected()){
-            tableView.getItems().addAll(DBUtility.getStudentsFromON());
+            tableView.getItems().clear();
+            tableView.getItems().addAll(DBUtility.getStudentsFromON("province = 'ON' "));
+            numOfStudentsLabel.setText("Number of Students: " + String.valueOf(tableView.getItems().size()));
         }
+        if(honourRollCheckBox.isSelected()){
+            tableView.getItems().clear();
+            tableView.getItems().addAll(DBUtility.getStudentsFromON("avgGrade >= 80"));
+            numOfStudentsLabel.setText("Number of Students: " + String.valueOf(tableView.getItems().size()));
+        }
+        if(honourRollCheckBox.isSelected() && ontarioCheckBox.isSelected()){
+            tableView.getItems().clear();
+            tableView.getItems().addAll(DBUtility.getStudentsFromON("avgGrade >= 80 AND province = 'ON'"));
+            numOfStudentsLabel.setText("Number of Students: " + String.valueOf(tableView.getItems().size()));
+        }
+
     }
 
     @Override

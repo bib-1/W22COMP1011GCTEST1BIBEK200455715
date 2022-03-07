@@ -52,10 +52,10 @@ public class DBUtility {
         return students;
     }
 
-    public static ArrayList<Student> getStudentsFromON() throws SQLException {
+    public static ArrayList<Student> getStudentsFromON(String condition) throws SQLException {
         ArrayList<Student> students = new ArrayList<>();
 
-        String selectQuery = "SELECT * FROM students WHERE province = 'On';";
+        String selectQuery = "SELECT * FROM students WHERE " + condition + ";";
 
         try (
                 Connection conn = DriverManager.getConnection(connectURL, userName, password); //connects to the database
