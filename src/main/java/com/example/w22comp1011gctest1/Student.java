@@ -40,10 +40,10 @@ public class Student {
     }
 
     public void setStudentNum(int studentNum) {
-        if(studentNum > 200034000)
+        if(studentNum >= 200034000)
             this.studentNum = studentNum;
         else
-            throw new IllegalArgumentException("Student number must be > 200034000");
+            throw new IllegalArgumentException("Student number must be >= 200034000");
     }
 
     public String getFirstName() {
