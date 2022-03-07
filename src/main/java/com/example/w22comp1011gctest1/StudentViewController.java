@@ -1,5 +1,6 @@
 package com.example.w22comp1011gctest1;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -51,7 +52,11 @@ public class StudentViewController implements Initializable {
     private ComboBox<String> areaCodeComboBox;
 
     @FXML
-    private void applyFilter()  {
+    private void applyFilter() throws SQLException {
+        tableView.getItems().clear();
+        if(ontarioCheckBox.isSelected()){
+            tableView.getItems().addAll(DBUtility.getStudentsFromON());
+        }
     }
 
     @Override
