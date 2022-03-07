@@ -73,6 +73,8 @@ public class StudentViewController implements Initializable {
             e.printStackTrace();
         }
 
+        numOfStudentsLabel.setText("Number of Students: " + String.valueOf(tableView.getItems().size()));
+
     }
 
 }
