@@ -1,6 +1,5 @@
 package com.example.w22comp1011gctest1;
 
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -53,27 +52,48 @@ public class StudentViewController implements Initializable {
 
     @FXML
     private void applyFilter() throws SQLException {
+
         if(ontarioCheckBox.isSelected()){
             tableView.getItems().clear();
             tableView.getItems().addAll(DBUtility.getStudentsFromON("province = 'ON' "));
-            numOfStudentsLabel.setText("Number of Students: " + String.valueOf(tableView.getItems().size()));
         }
         if(honourRollCheckBox.isSelected()){
             tableView.getItems().clear();
             tableView.getItems().addAll(DBUtility.getStudentsFromON("avgGrade >= 80"));
-            numOfStudentsLabel.setText("Number of Students: " + String.valueOf(tableView.getItems().size()));
         }
         if(honourRollCheckBox.isSelected() && ontarioCheckBox.isSelected()){
             tableView.getItems().clear();
             tableView.getItems().addAll(DBUtility.getStudentsFromON("avgGrade >= 80 AND province = 'ON'"));
-            numOfStudentsLabel.setText("Number of Students: " + String.valueOf(tableView.getItems().size()));
         }
+
+        if(areaCodeComboBox.getSelectionModel().isSelected(1)) {
+            if (areaCodeComboBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("All")) {
+            } else {
+                String code = areaCodeComboBox.getSelectionModel().getSelectedItem();
+                tableView.getItems().clear();
+                tableView.getItems().addAll(DBUtility.getStudentsFromON("telephone LIKE '" + code + "%'"));
+                if (ontarioCheckBox.isSelected()) {
+                    tableView.getItems().clear();
+                    tableView.getItems().addAll(DBUtility.getStudentsFromON("province = 'ON' AND telephone LIKE '" + code + "%'"));
+                }
+                if (honourRollCheckBox.isSelected()) {
+                    tableView.getItems().clear();
+                    tableView.getItems().addAll(DBUtility.getStudentsFromON("avgGrade >= 80 AND telephone LIKE '" + code + "%'"));
+                }
+                if (honourRollCheckBox.isSelected() && ontarioCheckBox.isSelected()) {
+                    tableView.getItems().clear();
+                    tableView.getItems().addAll(DBUtility.getStudentsFromON("avgGrade >= 80 AND province = 'ON' AND telephone LIKE '\"+ code + \"%'"));
+                }
+            }
+        }
+        numOfStudentsLabel.setText("Number of Students: " + String.valueOf(tableView.getItems().size()));
+
 
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        areaCodeComboBox.getItems().addAll("416", "905", "519", "647", "705");
+        areaCodeComboBox.getItems().addAll("ALL", "416", "905", "519", "647", "705");
 
         studentNumCol.setCellValueFactory(new PropertyValueFactory<>("studentNum"));
         firstNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
