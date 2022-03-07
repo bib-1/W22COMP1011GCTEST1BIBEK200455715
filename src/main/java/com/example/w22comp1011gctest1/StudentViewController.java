@@ -56,7 +56,7 @@ public class StudentViewController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        areaCodeComboBox.getItems().add("All");
+        areaCodeComboBox.getItems().addAll("416", "905", "519", "647", "705");
 
         studentNumCol.setCellValueFactory(new PropertyValueFactory<>("studentNum"));
         firstNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
