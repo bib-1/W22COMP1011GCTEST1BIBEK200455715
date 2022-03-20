@@ -53,47 +53,47 @@ public class DBUtility {
         return students;
     }
 
-    public static ArrayList<Student> getStudentsFromON(String condition) throws SQLException {
-        ArrayList<Student> students = new ArrayList<>();
-
-        String selectQuery = "SELECT * FROM students WHERE " + condition + ";";
-        System.out.println(selectQuery);
-
-        try (
-                Connection conn = DriverManager.getConnection(connectURL, userName, password); //connects to the database
-                Statement st = conn.createStatement(); //Creates connection object
-                ResultSet rs = st.executeQuery(selectQuery) // Executes query and stores result
-        ) {
-//            ResultSetMetaData rsMetaData = rs.getMetaData();
-//            int number = rsMetaData.getColumnCount();
-//            for(int i=1; i< number; i++)
-//            {
-//                System.out.println(rsMetaData.getColumnName(i));
+//    public static ArrayList<Student> getStudentsFromON(String condition) throws SQLException {
+//        ArrayList<Student> students = new ArrayList<>();
 //
+//        String selectQuery = "SELECT * FROM students WHERE " + condition + ";";
+//        System.out.println(selectQuery);
+//
+//        try (
+//                Connection conn = DriverManager.getConnection(connectURL, userName, password); //connects to the database
+//                Statement st = conn.createStatement(); //Creates connection object
+//                ResultSet rs = st.executeQuery(selectQuery) // Executes query and stores result
+//        ) {
+////            ResultSetMetaData rsMetaData = rs.getMetaData();
+////            int number = rsMetaData.getColumnCount();
+////            for(int i=1; i< number; i++)
+////            {
+////                System.out.println(rsMetaData.getColumnName(i));
+////
+////            }
+//
+//            while (rs.next()) {
+//                int studentNum = rs.getInt("studentNum");
+//                String firstName = rs.getString("firstName");
+//                String lastName = rs.getString("lastName");
+//                String telephone = rs.getString("telephone");
+//                String address = rs.getString("homeAddress");
+//                String province = rs.getString("province");
+//                String major = rs.getString("major");
+//                int avgGrade = rs.getInt("avgGrade");
+//
+//                //Creating new Student Object
+//                Student newStudent = new Student(studentNum, firstName, lastName,  telephone, address, province, avgGrade, major);
+//
+//                //adding in the object list
+//                students.add(newStudent);
 //            }
-
-            while (rs.next()) {
-                int studentNum = rs.getInt("studentNum");
-                String firstName = rs.getString("firstName");
-                String lastName = rs.getString("lastName");
-                String telephone = rs.getString("telephone");
-                String address = rs.getString("homeAddress");
-                String province = rs.getString("province");
-                String major = rs.getString("major");
-                int avgGrade = rs.getInt("avgGrade");
-
-                //Creating new Student Object
-                Student newStudent = new Student(studentNum, firstName, lastName,  telephone, address, province, avgGrade, major);
-
-                //adding in the object list
-                students.add(newStudent);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return students;
-    }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return students;
+//    }
 
 
 

@@ -52,6 +52,9 @@ public class StudentViewController implements Initializable {
     @FXML
     private ComboBox<String> areaCodeComboBox;
 
+    public StudentViewController() throws SQLException {
+    }
+
 //    @FXML
 //    private void applyFilter() throws SQLException {
 //
@@ -104,31 +107,39 @@ public class StudentViewController implements Initializable {
         ArrayList<Student> filteredStudent = new ArrayList<>();
         filteredStudent.addAll(students);
         tableView.getItems().clear();
+        for(Student student: students) {
+            if (ontarioCheckBox.isSelected()) {
+                if (!student.getProvince().equals("ON"))
+                    filteredStudent.remove(student);
+            }
+            if (honourRollCheckBox.isSelected()) {
+                  if (student.getAvgGrade() < 80)
+                    filteredStudent.remove(student);
+            }
 
-            if(ontarioCheckBox.isSelected()){
-                for(Student student: students){
-                    if(!student.getProvince().equals("ON"))
+                String areaCode = areaCodeComboBox.getSelectionModel().getSelectedItem();
+                if(areaCode == null){
+                    areaCode = "ALL";
+                }
+                if (!areaCode.equals("ALL")) {
+                    if (!student.getTelephone().substring(0, 3).equals(areaCode))
                         filteredStudent.remove(student);
                 }
-            }
-            if(honourRollCheckBox.isSelected()){
-                for(Student student: students) {
-                    if (student.getAvgGrade() < 80)
-                        filteredStudent.remove(student);
-                }
-            }
+
+        }
+
             tableView.getItems().addAll(filteredStudent);
             numOfStudentsLabel.setText("Number of Students: " + tableView.getItems().size());
         }
 
 
-    ArrayList<Student> students= new ArrayList<>();
+    ArrayList<Student> students= DBUtility.getStudentsFromDB();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         areaCodeComboBox.getItems().addAll("ALL");
         areaCodeComboBox.getItems().addAll(getAreaCode());
-
+        getAreaCode();
         studentNumCol.setCellValueFactory(new PropertyValueFactory<>("studentNum"));
         firstNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
         lastNameCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
@@ -138,11 +149,7 @@ public class StudentViewController implements Initializable {
         avgGradeCol.setCellValueFactory(new PropertyValueFactory<>("avgGrade"));
         majorCol.setCellValueFactory(new PropertyValueFactory<>("major"));
 
-        try {
-            students = DBUtility.getStudentsFromDB();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
         tableView.getItems().addAll(students);
 
         numOfStudentsLabel.setText("Number of Students: " + String.valueOf(tableView.getItems().size()));
