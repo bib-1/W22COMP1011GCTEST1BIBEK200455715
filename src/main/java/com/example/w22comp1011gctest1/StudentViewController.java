@@ -7,7 +7,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.TreeSet;
 
 public class StudentViewController implements Initializable {
 
@@ -50,50 +52,82 @@ public class StudentViewController implements Initializable {
     @FXML
     private ComboBox<String> areaCodeComboBox;
 
+//    @FXML
+//    private void applyFilter() throws SQLException {
+//
+//        if(ontarioCheckBox.isSelected()){
+//            tableView.getItems().clear();
+//            tableView.getItems().addAll(DBUtility.getStudentsFromON("province = 'ON' "));
+//        }
+//        if(honourRollCheckBox.isSelected()){
+//            tableView.getItems().clear();
+//            tableView.getItems().addAll(DBUtility.getStudentsFromON("avgGrade >= 80"));
+//        }
+//        if(honourRollCheckBox.isSelected() && ontarioCheckBox.isSelected()){
+//            tableView.getItems().clear();
+//            tableView.getItems().addAll(DBUtility.getStudentsFromON("avgGrade >= 80 AND province = 'ON'"));
+//        }
+//
+//        if(areaCodeComboBox.getSelectionModel().isSelected(1)) {
+//            String code = areaCodeComboBox.getSelectionModel().getSelectedItem();
+//
+//            if (areaCodeComboBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("ALL")) {
+//                tableView.getItems().clear();
+//                tableView.getItems().addAll(DBUtility.getStudentsFromON("telephone is not NULL"));
+//
+//            } else
+//            {
+//                tableView.getItems().clear();
+//                tableView.getItems().addAll(DBUtility.getStudentsFromON("telephone LIKE '" + code + "%'"));
+//
+//                if (ontarioCheckBox.isSelected()) {
+//                    tableView.getItems().clear();
+//                    tableView.getItems().addAll(DBUtility.getStudentsFromON("province = 'ON' AND telephone LIKE '" + code + "%'"));
+//                }
+//                if (honourRollCheckBox.isSelected()) {
+//                    tableView.getItems().clear();
+//                    tableView.getItems().addAll(DBUtility.getStudentsFromON("avgGrade >= 80 AND telephone LIKE '" + code + "%'"));
+//                }
+//                if (honourRollCheckBox.isSelected() && ontarioCheckBox.isSelected()) {
+//                    tableView.getItems().clear();
+//                    tableView.getItems().addAll(DBUtility.getStudentsFromON("avgGrade >= 80 AND province = 'ON' AND telephone LIKE '"+ code + "%'"));
+//                }
+//            }
+//        }
+//        numOfStudentsLabel.setText("Number of Students: " + String.valueOf(tableView.getItems().size()));
+//
+//
+//    }
+
     @FXML
-    private void applyFilter() throws SQLException {
+    private void applyFilter(){
+        ArrayList<Student> filteredStudent = new ArrayList<>();
+        filteredStudent.addAll(students);
+        tableView.getItems().clear();
 
-        if(ontarioCheckBox.isSelected()){
-            tableView.getItems().clear();
-            tableView.getItems().addAll(DBUtility.getStudentsFromON("province = 'ON' "));
-        }
-        if(honourRollCheckBox.isSelected()){
-            tableView.getItems().clear();
-            tableView.getItems().addAll(DBUtility.getStudentsFromON("avgGrade >= 80"));
-        }
-        if(honourRollCheckBox.isSelected() && ontarioCheckBox.isSelected()){
-            tableView.getItems().clear();
-            tableView.getItems().addAll(DBUtility.getStudentsFromON("avgGrade >= 80 AND province = 'ON'"));
-        }
-
-        if(areaCodeComboBox.getSelectionModel().isSelected(1)) {
-            if (areaCodeComboBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("All")) {
-            } else {
-                String code = areaCodeComboBox.getSelectionModel().getSelectedItem();
-                tableView.getItems().clear();
-                tableView.getItems().addAll(DBUtility.getStudentsFromON("telephone LIKE '" + code + "%'"));
-                if (ontarioCheckBox.isSelected()) {
-                    tableView.getItems().clear();
-                    tableView.getItems().addAll(DBUtility.getStudentsFromON("province = 'ON' AND telephone LIKE '" + code + "%'"));
-                }
-                if (honourRollCheckBox.isSelected()) {
-                    tableView.getItems().clear();
-                    tableView.getItems().addAll(DBUtility.getStudentsFromON("avgGrade >= 80 AND telephone LIKE '" + code + "%'"));
-                }
-                if (honourRollCheckBox.isSelected() && ontarioCheckBox.isSelected()) {
-                    tableView.getItems().clear();
-                    tableView.getItems().addAll(DBUtility.getStudentsFromON("avgGrade >= 80 AND province = 'ON' AND telephone LIKE '\"+ code + \"%'"));
+            if(ontarioCheckBox.isSelected()){
+                for(Student student: students){
+                    if(!student.getProvince().equals("ON"))
+                        filteredStudent.remove(student);
                 }
             }
+            if(honourRollCheckBox.isSelected()){
+                for(Student student: students) {
+                    if (student.getAvgGrade() < 80)
+                        filteredStudent.remove(student);
+                }
+            }
+            tableView.getItems().addAll(filteredStudent);
+            numOfStudentsLabel.setText("Number of Students: " + tableView.getItems().size());
         }
-        numOfStudentsLabel.setText("Number of Students: " + String.valueOf(tableView.getItems().size()));
 
 
-    }
+    ArrayList<Student> students= new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        areaCodeComboBox.getItems().addAll("ALL", "416", "905", "519", "647", "705");
+        areaCodeComboBox.getItems().addAll("ALL");
+        areaCodeComboBox.getItems().addAll(getAreaCode());
 
         studentNumCol.setCellValueFactory(new PropertyValueFactory<>("studentNum"));
         firstNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
@@ -105,13 +139,24 @@ public class StudentViewController implements Initializable {
         majorCol.setCellValueFactory(new PropertyValueFactory<>("major"));
 
         try {
-            tableView.getItems().addAll(DBUtility.getStudentsFromDB());
+            students = DBUtility.getStudentsFromDB();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        tableView.getItems().addAll(students);
 
         numOfStudentsLabel.setText("Number of Students: " + String.valueOf(tableView.getItems().size()));
 
+    }
+    //method to get the area code
+    private TreeSet<String> getAreaCode(){
+
+        TreeSet areaCodes = new TreeSet();
+
+        for(Student student: students){
+            areaCodes.add(student.getTelephone().substring(0,3));
+        }
+        return areaCodes;
     }
 
 }

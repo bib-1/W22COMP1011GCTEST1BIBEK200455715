@@ -2,6 +2,7 @@ package com.example.w22comp1011gctest1;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 public class DBUtility {
 
@@ -56,6 +57,7 @@ public class DBUtility {
         ArrayList<Student> students = new ArrayList<>();
 
         String selectQuery = "SELECT * FROM students WHERE " + condition + ";";
+        System.out.println(selectQuery);
 
         try (
                 Connection conn = DriverManager.getConnection(connectURL, userName, password); //connects to the database
@@ -92,6 +94,9 @@ public class DBUtility {
         }
         return students;
     }
+
+
+
 
     public static void main(String[] args) throws SQLException {
         getStudentsFromDB();
